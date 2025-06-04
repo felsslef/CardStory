@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="home">
+      <button onclick="window.location.href='/index.html'">Caraio</button>
+    </div>
+  </header>
+  <div class="header">
+    <div class="form-wrapper">
+      <div class="form-container">
+        <form id="registroForm">
+          <h2>Crie sua conta</h2>
+          <input type="text" name="nome" placeholder="Nome" required />
+          <input type="text" name="sobrenome" placeholder="Sobrenome" required />
+          <input type="text" name="username" placeholder="Username" required />
+          <input type="email" name="email" placeholder="Email" required />
+          <div class="campo-senha">
+            <input type="password" id="senha" name="senha" placeholder="Senha" required />
+            <span class="icone-visivel" onclick="toggleSenha('senha', this)">Mostre</span>
+          </div>
+
+          <div class="campo-senha">
+            <input type="password" id="confirmarSenha" name="confirmarSenha" placeholder="Confirmar senha" required />
+            <span class="icone-visivel" onclick="toggleSenha('confirmarSenha', this)">Mostre</span>
+          </div>
+          <select name="sexo">
+            <option value="">Selecione o sexo</option>
+            <option value="M">Masculino</option>
+            <option value="F">Feminino</option>
+            <option value="N">Prefiro não informar</option>
+          </select>
+          <input type="date" name="dataNasc" />
+          <button type="submit">Registrar</button>
+          <p id="mensagem"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <style>
+  header button {
+    position: relative;
+    left:100px;
+    margin: 60px 0 0 0;
+    width: 10vw;
+    height: 5vh;
+  }
+  </style>
+
+  <script src="register.js"></script>
+</body>
+</html>

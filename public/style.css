@@ -1,0 +1,184 @@
+body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: #1F2841;
+}
+
+.header {
+    margin: 0px 0px;
+    width: 100vw;
+    height:100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} 
+
+.image {
+    display: flex;
+    justify-content: center;
+}
+
+.button {
+    height: 10%;
+    width: 100%;
+    margin: -100px -50px 150px 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.profile button {
+    position: relative;
+    height: 50px;
+    width: 50px;
+    left: 30px;;
+    border-radius: 100px;
+    border: none;
+    background-color: grey;
+    cursor: pointer;
+}
+
+.left_button {
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+    color: rgb(155, 155, 246);
+    height: 100%;
+    width: 23%;
+    border-radius: 50px 0px 0px 50px;
+    border: none;
+    cursor: pointer;
+    background-color: #2C3B65;
+}
+
+.left_button:hover {
+    background-color: rgb(74, 74, 103);
+}
+
+.middle_button {
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+    color: rgb(155, 155, 246);
+    height: 100%;
+    width: 23%;
+    border: none;
+    cursor: pointer;
+    background-color: #2C3B65;
+}
+
+.middle_button:hover {
+    background-color: rgb(74, 74, 103);
+}
+
+.right_button {
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: medium;
+    color: rgb(155, 155, 246);
+    height: 100%;
+    width: 23%;
+    border-radius: 0px 50px 50px 0px;
+    border: none;
+    cursor: pointer;
+    background-color: #2C3B65;
+}
+
+.right_button:hover {
+    background-color: rgb(74, 74, 103);
+}
+
+main {
+    display: flex;
+    justify-content: center;
+}
+
+body, .header {
+  overflow-x: hidden;
+}
+
+.form-wrapper {
+  background-color: #2C3B65;
+  display: flex;
+  justify-content: center;
+  width: 20%;
+  padding-right: 50px;
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 0 15px #141a28;
+}
+
+.form-container {
+  width: 16vw;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.campo-senha {
+  display: flex;
+  flex-direction: row;
+}
+
+.icone-visivel {
+  position: relative;
+  cursor: pointer;
+  right: 40%;
+  top: 10px;
+}
+
+#registroForm {
+  padding: 40px;
+}
+
+
+#registroForm button {
+  margin-bottom: 15px;
+  padding: 10px;
+  height: 35px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  background-color: #27304b;
+  color: white;
+  box-shadow: 0 0 5px #00000055;
+  outline: none;
+  cursor: pointer;
+}
+
+
+form input {
+  margin-bottom: 15px;
+  padding: 10px;
+  height: 20px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  background-color: #243055;
+  color: white;
+  box-shadow: 0 0 5px #00000055;
+  outline: none;
+}
+
+form select {
+  margin-bottom: 15px;
+  padding: 10px;
+  height: 40px;
+  border-radius: 10px;
+  border: none;
+  font-size: 16px;
+  background-color: #243055;
+  color: white;
+  box-shadow: 0 0 5px #00000055;
+  outline: none;
+}
+
+form input::placeholder {
+  color: #ccc;
+}
+
+form input:focus,
+form select:focus {
+  box-shadow: 0 0 8px #4b8cff;
+}
