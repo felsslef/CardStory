@@ -71,3 +71,22 @@ tagButtons.forEach(btn => {
 // Opcional: busca inicial sem filtro (vazio)
 games = [];
 renderGames();
+
+const button = document.querySelector(".profile_button");
+const dropdown = document.getElementById("profileDropdown");
+
+button.addEventListener("mouseenter", () => {
+  dropdown.style.display = "flex";
+});
+
+button.addEventListener("mouseleave", () => {
+  setTimeout(() => {
+    if (!dropdown.matches(':hover')) {
+      dropdown.style.display = "none";
+    }
+  }, 200);
+});
+
+dropdown.addEventListener("mouseleave", () => {
+  dropdown.style.display = "none";
+});

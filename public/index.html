@@ -15,16 +15,33 @@
                 <button class="right_button" onclick="window.location.href='/discovery.html'">Lista de desejos</button>
 
                 <div class="profile">
-                    <button class="profile_button" onclick="window.location.href='/register.html'"> </button>
+                    <button class="profile_button" onmouseenter="toggleDropdown()">Perfil</button>
+                    <div class="dropdown-content" id="profileDropdown">
+                        <button onclick="window.location.href='/register.html'">Registrar</button>
+                        <button onclick="window.location.href='/login.html'">Entrar</button>
+                    </div>
                 </div>
             </div>
             <div class="image">
-                <img src="./img/seta_esquerda.png" alt="Seta esquerda" class="arrow" style="cursor: pointer">
+                <img src="./img/seta_esquerda.png" alt="Seta_esquerda" class="arrow">
                 <img src="./img/game_awards_hd.jpg" alt="Imagem_principal" class="main-image">
-                <img src="./img/seta_direita.png" alt="Seta direita" class="arrow" style="cursor: pointer">
+                <img src="./img/seta_direita.png" alt="Seta_direita" class="arrow">
             </div>
         </div>
     </header>
-    <main>
+    <script>
+        function toggleDropdown() {
+            const dropdown = document.getElementById("profileDropdown");
+            dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
+        }
+
+        document.addEventListener("click", function(event) {
+            const dropdown = document.getElementById("profileDropdown");
+            const button = document.querySelector(".profile_button");
+            if (!dropdown.contains(event.target) && !button.contains(event.target)) {
+            dropdown.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>

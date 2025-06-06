@@ -31,6 +31,11 @@ body {
   height: 50px;
   position: relative;
   top: 0;
+  cursor: pointer;
+}
+
+.arrow:hover {
+  transform: scale(1.2);
 }
 
 .main-image {
@@ -43,35 +48,71 @@ body {
 }
 
 .button {
-    height: 10%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  height: 10%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile {
+  position: relative;
+  display: inline-block;
 }
 
 .profile_button {
-    position: relative;
-    height: 50px;
-    width: 50px;
-    left: 50px;
-    border-radius: 100px;
-    border: none;
-    background-color: grey;
-    cursor: pointer;
+  position: relative;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  left: 80px;
+  height: 40px;
+  width: 60px;
+  background-color: #2C3B65;
+  border: none;
+  border-radius: 10px;
+  color: rgb(155, 155, 246);
 }
 
+.dropdown-content {
+  display: none;
+  position: absolute;
+  top: 45px;
+  left: 79px;
+  background-color: #2C3B65;
+  padding: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  border-radius: 10px;
+  z-index: 10;
+  flex-direction: column;
+}
+
+.dropdown-content button {
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  background: none;
+  border: none;
+  color: rgb(155, 155, 246);
+  padding: 8px 0;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.dropdown-content button:hover {
+  color: #4b8cff;
+}
+
+
 .left_button {
-    margin-left: 40px;
-    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    font-size: medium;
-    color: rgb(155, 155, 246);
-    height: 80px;
-    width: 23%;
-    border-radius: 50px 0px 0px 50px;
-    border: none;
-    cursor: pointer;
-    background-color: #2C3B65;
+  margin-left: 40px;
+  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: medium;
+  color: rgb(155, 155, 246);
+  height: 80px;
+  width: 23%;
+  border-radius: 50px 0px 0px 50px;
+  border: none;
+  cursor: pointer;
+  background-color: #2C3B65;
 }
 
 .middle_button {
