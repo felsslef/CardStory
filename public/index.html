@@ -3,32 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Home</title>
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <header>
         <div class="header">
             <div class="button">
-                <button class="left_button" onclick="window.location.href='/favoritos.html'">Favoritos</button>
-                <button class="middle_button" onclick="window.location.href='/discovery.html'">Descubra novos jogos</button>
-                <button class="right_button" onclick="window.location.href='/discovery.html'">Lista de desejos</button>
+                <img class="logo_button" src="./img/logo.png" onclick="window.location.href='/index.html'"></img>
+
+                <div class="main_buttons">
+                    <button class="left_button" onclick="window.location.href='/favoritos.html'">Favoritos</button>
+                    <button class="middle_button" onclick="window.location.href='/discovery.html'">Descubra novos jogos</button>
+                    <button class="right_button" onclick="window.location.href='/discovery.html'">Lista de desejos</button>
+                </div>
 
                 <div class="profile">
-                    <button class="profile_button" onmouseenter="toggleDropdown()">Perfil</button>
+                    <button id="profileButton" class="profile_button" onmouseenter="toggleDropdown()">Perfil</button>
                     <div class="dropdown-content" id="profileDropdown">
                         <button onclick="window.location.href='/register.html'">Registrar</button>
                         <button onclick="window.location.href='/login.html'">Entrar</button>
                     </div>
                 </div>
             </div>
-            <div class="image">
-                <img src="./img/seta_esquerda.png" alt="Seta_esquerda" class="arrow">
-                <img src="./img/game_awards_hd.jpg" alt="Imagem_principal" class="main-image">
-                <img src="./img/seta_direita.png" alt="Seta_direita" class="arrow">
-            </div>
         </div>
     </header>
+    <main>
+        <div class="image">
+            <img src="./img/seta_esquerda.png" alt="Seta_esquerda" class="arrow">
+            <img src="./img/game_awards_hd.jpg" alt="Imagem_principal" class="main-image">
+            <img src="./img/seta_direita.png" alt="Seta_direita" class="arrow">
+        </div>
+    </main>
     <script>
         function toggleDropdown() {
             const dropdown = document.getElementById("profileDropdown");

@@ -90,3 +90,21 @@ button.addEventListener("mouseleave", () => {
 dropdown.addEventListener("mouseleave", () => {
   dropdown.style.display = "none";
 });
+
+//login
+window.addEventListener("DOMContentLoaded", () => {
+  const user = JSON.parse(localStorage.getItem("usuarioLogado"));
+  const profileButton = document.getElementById("profileButton");
+
+  if (user) {
+    profileButton.style.backgroundImage = `url('${user.fotoUrl}')`;
+    profileButton.textContent = "";
+    profileButton.onclick = () => {
+      window.location.href = "/perfil.html";
+    };
+  } else {
+    profileButton.onclick = () => {
+      window.location.href = "/register.html";
+    };
+  }
+});

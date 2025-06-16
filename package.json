@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@prisma/client": "^6.8.2",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "mysql": "^2.18.1"
   }

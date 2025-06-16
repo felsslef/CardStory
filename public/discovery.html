@@ -6,7 +6,77 @@
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
+  <div class="tag-selector">
+    <div class="input-box" onclick="toggleOverlay()">selecione as tags que deseja buscar.</div>
+    <div class="overlay" id="tagOverlay">
+      <div class="tags">
+        <button class="tag-btn" onclick="toggleTag(this)">Ação</button>
+        <button class="tag-btn" onclick="toggleTag(this)">RPG</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Multiplayer</button>
+        <button class="tag-btn" onclick="toggleTag(this)">Pixel Art</button>
+        <!-- Adicione mais tags aqui -->
+      </div>
+    </div>
+  </div>
 
-  <script src="js/script.js"></script>
+  <style>
+    body {
+  background-color: #1e2430;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.tag-selector {
+  position: relative;
+  max-width: 700px;
+  margin: 20px auto;
+}
+
+.input-box {
+  background-color: #10141f;
+  border-radius: 12px;
+  padding: 12px 20px;
+  color: #6c7890;
+  cursor: pointer;
+}
+
+.overlay {
+  display: none;
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  background-color: #10141f;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  z-index: 10;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.overlay.active {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tag-btn {
+  background-color: #2c3445;
+  color: white;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin: 5px;
+  transition: background-color 0.2s ease;
+}
+
+.tag-btn.selected {
+  background-color: #4f5d75;
+}
+
+  </style>
+
+  <script src="./js/discovery.js"></script>
 </body>
 </html>
