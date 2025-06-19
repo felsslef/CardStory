@@ -20,7 +20,7 @@ document.getElementById("registroForm").addEventListener("submit", async (e) => 
     Senha: senha,
     confirmSenha: confirmarSenha,
     Sexo: form.sexo.value || null,
-    DataNasc: form.dataNasc.value || null,
+    DataNasc: form.dataNasc.value || null
   };
 
   try {
@@ -38,6 +38,7 @@ document.getElementById("registroForm").addEventListener("submit", async (e) => 
     } else {
       mensagem.style.color = "lightgreen";
       mensagem.textContent = "Usuário cadastrado com sucesso!";
+      window.location.href = "/login.html";
       form.reset();
     }
   } catch (error) {

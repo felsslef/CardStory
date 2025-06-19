@@ -10,7 +10,7 @@ body {
 .header {
   width: 100%;
   padding-top: 20px;
-  padding-bottom: 100px;
+  padding-bottom: 110px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -61,10 +61,8 @@ body {
 
 .logo_button {
   position: absolute;
-  left: 20px;
-  right: 80px;
-  height: 100%;
-  width: 15%;
+  left: -100px;
+  transform: scale(0.3);
   border: none;
   border-radius: 10px;
   color: rgb(155, 155, 246);
@@ -72,7 +70,7 @@ body {
 }
 
 .logo_button:hover {
-  transform: scale(1.2);
+  transform: scale(0.4);
 }
 
 .profile {
@@ -81,7 +79,7 @@ body {
 }
 
 .profile_button {
-  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
   height: 40px;
   width: 60px;
   background-color: #2C3B65;
@@ -89,7 +87,22 @@ body {
   border-radius: 10px;
   color: rgb(155, 155, 246);
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   left: 80px;
+}
+
+.profile_button[style*="background-image"] {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  padding: 0;
+  border: 2px solid #4b8cff;
+}
+
+.profile:hover .dropdown-content {
+  display: flex;
+  flex-direction: column;
 }
 
 .dropdown-content {
@@ -97,6 +110,8 @@ body {
   position: absolute;
   top: 45px;
   left: 79px;
+  top: 50%;
+  margin-top: 20px;
   background-color: #2C3B65;
   padding: 15px;
   box-shadow: 0 0 10px rgba(0,0,0,0.5);
@@ -125,23 +140,11 @@ body {
   font-size: medium;
   display: flex;
   flex-direction: row;
-  justify-content: center; /* Centraliza os botões horizontalmente */
-  width: auto; /* Alterado para se ajustar ao conteúdo */
+  justify-content: center;
+  width: auto;
   color: rgb(155, 155, 246);
   border: none;
   cursor: pointer;
-}
-
-.left_button {
-  font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: medium;
-  color: rgb(155, 155, 246);
-  height: 80px;
-  width: 50%;
-  border-radius: 50px 0px 0px 50px;
-  border: none;
-  cursor: pointer;
-  background-color: #2C3B65;
 }
 
 .left_button, .middle_button, .right_button {
@@ -149,7 +152,7 @@ body {
   font-size: medium;
   color: rgb(155, 155, 246);
   height: 80px;
-  width: 200px;
+  width: 300px;
   border: none;
   cursor: pointer;
   background-color: #2C3B65;
@@ -164,7 +167,7 @@ body {
 }
 
 .middle_button {
-  border-radius: 0; /* Remove bordas arredondadas do meio */
+  border-radius: 0;
 }
 
 .left_button:hover,
@@ -288,23 +291,186 @@ form select:focus {
   cursor: pointer;
 }
 
-.grid {
+/* Estilos gerais */
+body {
+  font-family: 'Cambria', 'Cochin', Georgia, Times, 'Times New Roman', serif;
+  background-color: #1F2841;
+  color: #ffffff;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h1, h2 {
+  color: rgb(155, 155, 246);
+}
+
+/* Seção de tags */
+.tags-section {
+  background-color: #2C3B65;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.tags-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 20px;
-  margin-top: 20px;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.tag {
+  background-color: #243055;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tag:hover {
+  background-color: #3a4a7a;
+}
+
+.tag.selected {
+  background-color: #4b8cff;
+  box-shadow: 0 0 8px rgba(75, 140, 255, 0.6);
+}
+
+.search-btn {
+  display: block;
+  margin: 20px auto 0;
+  padding: 12px 25px;
+  background-color: #4b8cff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #3a7ae8;
+  transform: scale(1.05);
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
 }
 
 .jogo-card {
-  background: #1e1e2f;
-  padding: 10px;
+  background-color: #2C3B65;
   border-radius: 10px;
-  text-align: center;
-  color: white;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .jogo-card img {
   width: 100%;
-  height: auto;
+  height: 200px;
+  object-fit: cover;
+}
+
+.jogo-info {
+  padding: 15px;
+}
+
+.jogo-info h3 {
+  margin-top: 0;
+  color: rgb(155, 155, 246);
+}
+
+.jogo-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.jogo-tags .tag {
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: default;
+}
+
+.jogo-tags .tag:hover {
+  background-color: inherit;
+}
+
+.release-date {
+  color: #aaa;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.description {
+  line-height: 1.5;
+  margin-bottom: 0;
+}
+
+.error {
+  color: #ff6b6b;
+  text-align: center;
+}
+
+.edit-photo-modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.7);
+}
+
+.modal-content {
+  background-color: #2C3B65;
+  margin: 20% auto;
+  padding: 20px;
+  width: 80%;
+  max-width: 400px;
+  border-radius: 10px;
+  position: relative;
+}
+
+.close-modal {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.close-modal:hover {
+  color: #4b8cff;
+}
+
+#photoUrlInput {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
   border-radius: 5px;
+  border: none;
+  background-color: #243055;
+  color: white;
+}
+
+#confirmEdit {
+  width: 100%;
+  padding: 10px;
+  background-color: #4b8cff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }

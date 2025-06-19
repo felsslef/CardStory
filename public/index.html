@@ -35,19 +35,15 @@
             <img src="./img/seta_direita.png" alt="Seta_direita" class="arrow">
         </div>
     </main>
-    <script>
-        function toggleDropdown() {
-            const dropdown = document.getElementById("profileDropdown");
-            dropdown.style.display = dropdown.style.display === "flex" ? "none" : "flex";
-        }
-
-        document.addEventListener("click", function(event) {
-            const dropdown = document.getElementById("profileDropdown");
-            const button = document.querySelector(".profile_button");
-            if (!dropdown.contains(event.target) && !button.contains(event.target)) {
-            dropdown.style.display = "none";
-            }
-        });
-    </script>
+    <!-- Pop-up de Edição de Foto -->
+    <div id="editPhotoModal" class="edit-photo-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3>Editar Foto</h3>
+            <input type="text" id="photoUrlInput" placeholder="Cole a URL da imagem">
+            <button id="confirmEdit">Salvar</button>
+        </div>
+    </div>
+    <script src="./js/script.js"></script>
 </body>
 </html>

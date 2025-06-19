@@ -1,10 +1,11 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs'; // IMPORTANTE
+import bcrypt from 'bcryptjs';
 
 const router = express.Router();
 const prisma = new PrismaClient();
 
+// Rota para registro
 router.post('/register', async (req, res) => {
   const { Nome, Sobrenome, Username, Sexo, DataNasc, Email, Senha, confirmSenha } = req.body;
 
@@ -51,8 +52,7 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// rota de login
-
+// Rota para login
 router.post('/login', async (req, res) => {
   const { login, senha } = req.body;
 
@@ -63,6 +63,13 @@ router.post('/login', async (req, res) => {
           { Email: login },
           { Username: login }
         ]
+      },
+      select: {
+        Nome: true,
+        Username: true,
+        Email: true,
+        Senha: true,
+        fotoUrl: true
       }
     });
 
@@ -70,7 +77,7 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ erro: 'Usuário não encontrado' });
     }
 
-    const senhaCorreta = await bcrypt.compare(senha, usuario.Senha); // usando bcryptjs aqui
+    const senhaCorreta = await bcrypt.compare(senha, usuario.Senha);
 
     if (!senhaCorreta) {
       return res.status(401).json({ erro: 'Senha incorreta' });
@@ -81,7 +88,8 @@ router.post('/login', async (req, res) => {
       usuario: {
         Nome: usuario.Nome,
         Username: usuario.Username,
-        Email: usuario.Email
+        Email: usuario.Email,
+        fotoUrl: usuario.fotoUrl
       }
     });
   } catch (err) {
@@ -90,5 +98,44 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Rota para atualizar foto do usuário
+router.put('/update-photo', async (req, res) => {
+  const { username, fotoUrl } = req.body;
+
+  if (!username || !fotoUrl) {
+    return res.status(400).json({ error: 'Username e URL são obrigatórios' });
+  }
+
+  try {
+    // Validação da URL
+    new URL(fotoUrl);
+  } catch {
+    return res.status(400).json({ error: 'URL inválida' });
+  }
+
+  try {
+    // Busca usuário pelo Username
+    const user = await prisma.usuario.findUnique({
+      where: { Username: username }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    // Atualiza a foto
+    const updated = await prisma.usuario.update({
+      where: { Username: username },
+      data: { fotoUrl },
+      select: { Nome: true, Username: true, fotoUrl: true }
+    });
+
+    res.json({ success: true, user: updated });
+
+  } catch (error) {
+    console.error('Erro ao atualizar:', error);
+    res.status(500).json({ error: 'Erro interno no servidor', details: error.message });
+  }
+});
 
 export default router;
