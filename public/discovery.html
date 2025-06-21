@@ -1,24 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pesquisa por Tags</title>
-  <link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>discovery</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>Pesquisa de Jogos por Tags</h1>
-    
-    <div class="tags-section">
-      <h2>Selecione as tags:</h2>
-      <div id="tagsContainer" class="tags-grid"></div>
-      <button id="searchBtn" class="search-btn">Buscar Jogos</button>
-    </div>
-    
-    <div id="resultsContainer" class="results-grid"></div>
-  </div>
+    <header>
+        <div class="header">
+            <div class="button">
+                <img class="logo_button" src="./img/logo.png" onclick="window.location.href='/index.html'"></img>
+            </div>
+        </div>
+    </header>
+    <main>
+      <div class="search_button_wrapper" >
+        <button class="search_button">Selecione as tags</button>
+        <div class="dropdown-tag-content" id="search_dropdown">
 
-  <script src="/js/tags.js"></script>
+        </div>
+      </div>
+    </main>
+    
+    <script src="./js/tags.js"></script>
 </body>
 </html>

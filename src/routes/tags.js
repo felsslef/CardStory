@@ -5,43 +5,13 @@ const prisma = new PrismaClient();
 const router = express.Router();
 
 // Buscar todas as tags
-router.get('/tags', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const tags = await prisma.tag.findMany();
+    const tags = await prisma.tags.findMany();
     res.json(tags);
   } catch (error) {
+    console.error('Erro real ao buscar tags:', error);
     res.status(500).json({ error: 'Erro ao buscar tags' });
-  }
-});
-
-// Buscar jogos por tags
-router.post('/jogos-por-tags', async (req, res) => {
-  const { tagIds } = req.body;
-
-  if (!tagIds || tagIds.length === 0) {
-    return res.status(400).json({ error: 'Nenhuma tag selecionada' });
-  }
-
-  try {
-    // Encontrar jogos que tenham TODAS as tags selecionadas
-    const jogos = await prisma.jogo.findMany({
-      where: {
-        tags: {
-          every: {
-            id: {
-              in: tagIds
-            }
-          }
-        }
-      },
-      include: {
-        tags: true
-      }
-    });
-
-    res.json(jogos);
-  } catch (error) {
-    res.status(500).json({ error: 'Erro ao buscar jogos' });
   }
 });
 

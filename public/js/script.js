@@ -99,9 +99,9 @@ confirmEdit.addEventListener('click', async () => {
       headers: {
         'Content-Type': 'application/json'
       },
-      // Aqui você estava usando 'usuario.email' que não existe, deve ser user.Username
+
       body: JSON.stringify({
-        username: user.Username,  // mande username conforme backend
+        username: user.Username,
         fotoUrl: novaFotoUrl
       })
     });
@@ -115,7 +115,6 @@ confirmEdit.addEventListener('click', async () => {
 
     const data = await response.json();
 
-    // Atualiza localStorage com o novo dado da foto
     const updatedUser = { ...user, fotoUrl: novaFotoUrl };
     localStorage.setItem('usuarioLogado', JSON.stringify(updatedUser));
 
