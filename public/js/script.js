@@ -132,3 +132,4 @@ window.addEventListener('click', (event) => {
     closeEditPhotoModal();
   }
 });
+
