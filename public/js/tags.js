@@ -11,52 +11,135 @@ async function carregarTags() {
   try {
     const res = await fetch('http://localhost:3000/tags');
     if (!res.ok) throw new Error('Erro ao carregar tags');
-    
     const tags = await res.json();
-    if (!Array.isArray(tags)) throw new Error('Formato de tags inválido');
 
-    dropdown.innerHTML = '';
+    dropdown.innerHTML = '';                                              // limpa
 
-    // Agrupar tags por categoria
-    const categorias = {};
-    tags.forEach(tag => {
-      if (!categorias[tag.categoria]) {
-        categorias[tag.categoria] = [];
-      }
-      categorias[tag.categoria].push(tag);
+    // agrupa por categoria
+    const grupos = {};
+    tags.forEach(t => (grupos[t.categoria] = grupos[t.categoria] || []).push(t));
+
+    // monta cada categoria
+    Object.entries(grupos).forEach(([categoria, lista]) => {
+      const grupo = document.createElement('div');
+      grupo.className = 'tag-group';
+      grupo.innerHTML = `<h3 class="tag-group-title">${categoria}</h3>`;
+      lista.forEach(tag => {
+        const chip = document.createElement('div');
+        chip.className = 'tag-chip';
+        chip.dataset.id = tag.id;
+
+        // nome
+        const nomeSpan = document.createElement('span');
+        nomeSpan.textContent = tag.nome;
+        chip.appendChild(nomeSpan);
+
+        // botão editar
+        const bEd = document.createElement('button');
+        bEd.textContent = '✏️';
+        bEd.title = 'Editar';
+        bEd.style.cssText = 'margin-left:8px;background:transparent;border:none';
+        bEd.onclick = e => { e.stopPropagation(); editTag(tag); };
+        chip.appendChild(bEd);
+
+        // botão deletar
+        const bDel = document.createElement('button');
+        bDel.textContent = '🗑️';
+        bDel.title  = 'Excluir';
+        bDel.style.cssText = 'margin-left:5px;background:transparent;border:none';
+        bDel.onclick = async e => {
+          e.stopPropagation();
+          if (!confirm(`Excluir a tag "${tag.nome}"?`)) return;
+          try {
+            const r = await fetch(`http://localhost:3000/tags/${tag.id}`, { method:'DELETE' });
+            if (!r.ok) throw new Error('Falha ao excluir tag');
+            await carregarTags();
+            atualizarJogosExibidos();
+          } catch (err) { alert(err.message); }
+        };
+        chip.appendChild(bDel);
+
+        // seleção para filtro
+        chip.onclick = () => {
+          chip.classList.toggle('selected');
+          atualizarJogosExibidos();
+        };
+
+        grupo.appendChild(chip);
+      });
+      dropdown.appendChild(grupo);
     });
 
-    for (const categoria in categorias) {
-      const grupo = document.createElement('div');
-      grupo.classList.add('tag-group');
-
-      const titulo = document.createElement('h3');
-      titulo.textContent = categoria;
-      titulo.classList.add('tag-group-title');
-      grupo.appendChild(titulo);
-
-      categorias[categoria].forEach(tag => {
-        const tagElement = document.createElement('div');
-        tagElement.classList.add('tag-chip');
-        tagElement.textContent = tag.nome;
-        tagElement.dataset.id = tag.id;
-
-        tagElement.addEventListener('click', () => {
-          tagElement.classList.toggle('selected');
-          atualizarJogosExibidos();
-        });
-
-        grupo.appendChild(tagElement);
-      });
-
-      dropdown.appendChild(grupo);
-    }
+    // botão "Adicionar Tag" no fim
+    const btnAdd = document.createElement('button');
+    btnAdd.textContent = '➕ Adicionar Tag';
+    btnAdd.style.cssText = `
+      width:100%;padding:10px;margin-top:10px;background:#222;color:#fff;
+      border:none;border-radius:4px;cursor:pointer`;
+    btnAdd.onclick = abrirModalAdicionarTag;
+    dropdown.appendChild(btnAdd);
 
   } catch (err) {
-    console.error('Erro ao carregar tags:', err);
+    console.error(err);
     dropdown.innerHTML = '<p style="color:white;">Erro ao carregar tags.</p>';
   }
 }
+
+async function abrirModalAdicionarTag() {
+  // carrega categorias existentes
+  fetch('http://localhost:3000/tags')
+    .then(r => r.json())
+    .then(tags => {
+      const categorias = [...new Set(tags.map(t => t.categoria))];
+      const opts = categorias.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      const modal = document.createElement('div');
+      modal.className = 'modal-overlay';
+      modal.style.cssText = `
+        position:fixed;inset:0;background:rgba(0,0,0,.8);
+        display:flex;align-items:center;justify-content:center;z-index:1000`;
+      modal.innerHTML = `
+        <div style="background:#1a1a1a;padding:20px;border-radius:8px;color:#fff;width:280px">
+          <h3 style="margin-top:0">Nova Tag</h3>
+          <form id="formAddTag">
+            <label>Nome:</label>
+            <input id="nomeTag" style="width:100%;padding:6px;margin:4px 0" required>
+            <label>Categoria:</label>
+            <select id="catTag" style="width:100%;padding:6px;margin:4px 0">${opts}</select>
+            <div style="text-align:right;margin-top:8px">
+              <button type="button" id="cancelTag" style="margin-right:8px">Cancelar</button>
+              <button type="submit">Salvar</button>
+            </div>
+          </form>
+        </div>`;
+      document.body.appendChild(modal);
+
+      modal.querySelector('#cancelTag').onclick = () => document.body.removeChild(modal);
+
+      modal.querySelector('#formAddTag').onsubmit = async (e) => {
+        e.preventDefault();
+        const nome = document.getElementById('nomeTag').value.trim();
+        const categoria = document.getElementById('catTag').value;
+        try {
+          const r = await fetch('http://localhost:3000/tags', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome, categoria })
+          });
+          if (!r.ok) throw new Error('Falha ao criar tag');
+          alert('Tag criada!');
+          document.body.removeChild(modal);
+          await carregarTags();
+          atualizarJogosExibidos();
+        } catch (err) {
+          alert(err.message);
+        }
+      };
+    })
+    .catch(err => alert('Erro ao preparar modal: ' + err));
+}
+
+
 
 // Função para buscar todos os jogos
 async function buscarTodosJogos() {
@@ -76,11 +159,9 @@ async function buscarTodosJogos() {
 
 // Função para buscar jogos por tags
 async function buscarJogosPorTags(tagIds) {
-  // Normalização dos IDs
   if (!tagIds) tagIds = [];
   if (!Array.isArray(tagIds)) tagIds = [tagIds];
   
-  // Converter para números válidos
   const numericTagIds = tagIds
     .map(id => {
       const num = parseInt(id, 10);
@@ -89,8 +170,6 @@ async function buscarJogosPorTags(tagIds) {
     .filter(id => id !== null);
 
   try {
-    console.log('Buscando jogos para tags:', numericTagIds);
-
     const response = await fetch('http://localhost:3000/jogos/jogos-por-tags', {
       method: 'POST',
       headers: {
@@ -100,7 +179,6 @@ async function buscarJogosPorTags(tagIds) {
       body: JSON.stringify({ tagIds: numericTagIds })
     });
 
-    // Tratamento de erro melhorado
     if (!response.ok) {
       const errorText = await response.text();
       let errorData;
@@ -129,7 +207,6 @@ async function buscarJogosPorTags(tagIds) {
       stack: error.stack
     });
 
-    // Exibição de erro amigável
     const container = document.getElementById('jogosContainer');
     if (container) {
       container.innerHTML = `
@@ -148,7 +225,7 @@ async function buscarJogosPorTags(tagIds) {
   }
 }
 
-// Função para atualizar a exibição dos jogos
+// Atualiza a lista de jogos exibida
 async function atualizarJogosExibidos() {
   const tagsSelecionadas = document.querySelectorAll('.tag-chip.selected');
   const tagIds = Array.from(tagsSelecionadas).map(tag => tag.dataset.id);
@@ -166,7 +243,7 @@ async function atualizarJogosExibidos() {
   exibirJogos(jogos);
 }
 
-// Função para exibir jogos
+// Exibe os jogos no container
 function exibirJogos(jogos) {
   const jogosContainer = document.getElementById('jogosContainer');
   jogosContainer.innerHTML = '';
@@ -181,31 +258,168 @@ function exibirJogos(jogos) {
       </div>
     `;
     
-    // Adiciona o evento de clique ao botão
     document.getElementById('btnAdicionarJogo')?.addEventListener('click', () => {
       abrirModalAdicionarJogo();
     });
     return;
   }
 
-  // Código existente para exibir jogos
   jogos.forEach(jogo => {
-    const div = document.createElement('div');
-    div.classList.add('jogo-card');
-    div.innerHTML = `
+    const card = document.createElement('div');
+    card.classList.add('jogo-card');
+
+    card.innerHTML = `
       <img src="${jogo.imagem_url || 'placeholder.jpg'}" alt="${jogo.nome}">
       <h3>${jogo.nome}</h3>
       ${jogo.descricao ? `<p>${jogo.descricao.substring(0, 100)}...</p>` : ''}
+      <button class="btn-excluir" data-id="${jogo.id}" title="Excluir jogo">🗑️</button>
+      <button class="btn-editar" data-id="${jogo.id}" title="Editar jogo">✏️</button>
     `;
-    jogosContainer.appendChild(div);
+
+    jogosContainer.appendChild(card);
+  });
+
+  document.querySelectorAll('.btn-excluir').forEach(botao => {
+    botao.addEventListener('click', async (e) => {
+      const id = e.target.dataset.id;
+      if (!confirm('Tem certeza que deseja excluir este jogo?')) return;
+
+      try {
+        const res = await fetch(`http://localhost:3000/jogos/${id}`, { method: 'DELETE' });
+        if (!res.ok) throw new Error('Erro ao excluir jogo');
+        await atualizarJogosExibidos();
+      } catch (err) {
+        alert('Erro ao excluir jogo: ' + err.message);
+      }
+    });
+  });
+
+  document.querySelectorAll('.btn-editar').forEach(botao => {
+    botao.addEventListener('click', () => {
+      const id = botao.dataset.id;
+      const jogo = jogos.find(j => j.id == id);
+      if (!jogo) return console.error('Jogo não encontrado para editar:', id);
+      abrirModalEditarJogo(jogo);
+    });
   });
 }
 
-// Inicialização
-document.addEventListener('DOMContentLoaded', async () => {
-  await carregarTags();
-  await atualizarJogosExibidos(); // Mostra todos os jogos inicialmente
-});
+function abrirModalEditarJogo(jogo) {
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Editar Jogo</h2>
+      <form id="formEditarJogo">
+        <div class="form-group">
+          <label for="nomeJogoEditar">Nome do Jogo:</label>
+          <input type="text" id="nomeJogoEditar" value="${jogo.nome || ''}" required>
+        </div>
+
+        <div class="form-group">
+          <label for="descricaoJogoEditar">Descrição:</label>
+          <textarea id="descricaoJogoEditar" rows="4">${jogo.descricao || ''}</textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="imagemJogoEditar">URL da Imagem:</label>
+          <input type="url" id="imagemJogoEditar" value="${jogo.imagem_url || ''}">
+        </div>
+
+        <div class="form-group">
+          <label>Tags:</label>
+          <div id="tagsEditar" class="tags-container"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="cancel-button">Cancelar</button>
+          <button type="submit" class="submit-button">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Fecha o modal ao clicar em cancelar
+  modal.querySelector('.cancel-button').addEventListener('click', () => {
+    document.body.removeChild(modal);
+  });
+
+  // Carrega as tags com pré-seleção para o jogo
+  carregarTagsParaEditar(jogo);
+
+  // Tratar submissão do formulário de edição
+  modal.querySelector('#formEditarJogo').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await salvarJogoEditado(jogo.id);
+    document.body.removeChild(modal);
+    await atualizarJogosExibidos();
+  });
+}
+
+// Carrega tags no modal de edição e marca as que já pertencem ao jogo
+async function carregarTagsParaEditar(jogo) {
+  const container = document.getElementById('tagsEditar');
+  container.innerHTML = ''; // limpa antes
+
+  try {
+    const response = await fetch('http://localhost:3000/tags');
+    const todasTags = await response.json();
+
+    // Pegando ids das tags do jogo, assumindo que jogo.JogoTags é array com {tag: {id,...}}
+    const tagsDoJogo = (jogo.JogoTags || []).map(rel => rel.tag.id);
+
+    todasTags.forEach(tag => {
+      const tagEl = document.createElement('div');
+      tagEl.className = 'modal-tag-chip';
+      tagEl.innerHTML = `
+        <input type="checkbox" id="tag-edit-${tag.id}" value="${tag.id}" ${tagsDoJogo.includes(tag.id) ? 'checked' : ''}>
+        <label for="tag-edit-${tag.id}">${tag.nome}</label>
+      `;
+      container.appendChild(tagEl);
+    });
+
+  } catch (error) {
+    console.error('Erro ao carregar tags para editar:', error);
+  }
+}
+
+// Função para salvar as alterações do jogo
+async function salvarJogoEditado(id) {
+  const nome = document.getElementById('nomeJogoEditar').value.trim();
+  const descricao = document.getElementById('descricaoJogoEditar').value.trim();
+  const imagem_url = document.getElementById('imagemJogoEditar').value.trim();
+
+  const tagsSelecionadas = Array.from(
+    document.querySelectorAll('#tagsEditar input[type="checkbox"]:checked')
+  ).map(cb => parseInt(cb.value));
+
+  if (!nome) {
+    alert('Nome do jogo é obrigatório!');
+    return;
+  }
+
+  try {
+    const res = await fetch(`http://localhost:3000/jogos/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome, descricao, imagem_url, tags: tagsSelecionadas }),
+    });
+
+    if (!res.ok) {
+      const erro = await res.json();
+      throw new Error(erro.error || 'Erro ao atualizar jogo');
+    }
+
+    alert('Jogo atualizado com sucesso!');
+
+  } catch (err) {
+    alert('Erro ao salvar edição: ' + err.message);
+    console.error(err);
+  }
+}
+
 
 function abrirModalAdicionarJogo() {
   // Cria o modal
@@ -245,15 +459,15 @@ function abrirModalAdicionarJogo() {
 
   document.body.appendChild(modal);
 
-  // Carrega as tags disponíveis
+  // Carrega as tags disponíveis para seleção
   carregarTagsParaModal();
 
-  // Fecha o modal ao clicar no botão cancelar
+  // Fecha o modal ao clicar no cancelar
   modal.querySelector('.cancel-button').addEventListener('click', () => {
     document.body.removeChild(modal);
   });
 
-  // Submissão do formulário
+  // Trata o envio do formulário para salvar o jogo
   modal.querySelector('#formAdicionarJogo').addEventListener('submit', async (e) => {
     e.preventDefault();
     await salvarNovoJogo();
@@ -261,12 +475,15 @@ function abrirModalAdicionarJogo() {
   });
 }
 
+// Função para carregar as tags dentro do modal adicionar jogo
 async function carregarTagsParaModal() {
   try {
     const response = await fetch('http://localhost:3000/tags');
     const tags = await response.json();
     const container = document.getElementById('tagsDisponiveis');
     
+    container.innerHTML = ''; // Limpa antes de preencher
+
     tags.forEach(tag => {
       const tagElement = document.createElement('div');
       tagElement.className = 'modal-tag-chip';
@@ -281,18 +498,23 @@ async function carregarTagsParaModal() {
   }
 }
 
+// Função para salvar novo jogo no backend
 async function salvarNovoJogo() {
-  const nome = document.getElementById('nomeJogo').value;
-  const descricao = document.getElementById('descricaoJogo').value;
-  const imagemUrl = document.getElementById('imagemJogo').value;
+  const nome = document.getElementById('nomeJogo').value.trim();
+  const descricao = document.getElementById('descricaoJogo').value.trim();
+  const imagemUrl = document.getElementById('imagemJogo').value.trim();
   
-  // Coleta as tags selecionadas
+  // Pega as tags selecionadas
   const tagsSelecionadas = Array.from(
     document.querySelectorAll('#tagsDisponiveis input[type="checkbox"]:checked')
   ).map(checkbox => parseInt(checkbox.value));
 
+  if (!nome) {
+    alert('Nome do jogo é obrigatório!');
+    return;
+  }
+
   try {
-    // 1. Cria o jogo com as tags em uma única transação
     const response = await fetch('http://localhost:3000/jogos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -300,7 +522,7 @@ async function salvarNovoJogo() {
         nome,
         descricao,
         imagem_url: imagemUrl,
-        tags: tagsSelecionadas  // Envia as tags junto com o jogo
+        tags: tagsSelecionadas
       })
     });
 
@@ -309,17 +531,15 @@ async function salvarNovoJogo() {
       throw new Error(errorData.error || 'Erro ao criar jogo');
     }
 
-    // 2. Atualiza a lista de jogos
-    await atualizarJogosExibidos();
-    
-    // 3. Fecha o modal
-    document.querySelector('.modal-overlay')?.remove();
-    
-    // 4. Feedback visual
     alert('Jogo criado com sucesso!');
-    
+    await atualizarJogosExibidos(); // Atualiza lista
   } catch (error) {
-    console.error('Erro ao salvar jogo:', error);
     alert(`Erro ao salvar o jogo: ${error.message}`);
+    console.error(error);
   }
 }
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await carregarTags();
+  await atualizarJogosExibidos();
+});

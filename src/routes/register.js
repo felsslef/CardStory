@@ -138,4 +138,29 @@ router.put('/update-photo', async (req, res) => {
   }
 });
 
+// Rota para deletar usuário por Username
+router.delete('/delete/:username', async (req, res) => {
+  const { username } = req.params;
+
+  try {
+    const user = await prisma.usuario.findUnique({
+      where: { Username: username }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    await prisma.usuario.delete({
+      where: { Username: username }
+    });
+
+    res.status(200).json({ message: 'Usuário deletado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao deletar usuário:', error);
+    res.status(500).json({ error: 'Erro interno ao deletar usuário' });
+  }
+});
+
+
 export default router;

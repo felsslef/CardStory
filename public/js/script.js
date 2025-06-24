@@ -38,6 +38,7 @@ function updateProfileButton() {
       profileDropdown.innerHTML = `
         <button onclick="openEditPhotoModal()">Editar Foto</button>
         <button onclick="logout()">Sair</button>
+        <button id="delete-account-btn">Excluir Conta</button>
       `;
 
     } catch (error) {
@@ -133,3 +134,27 @@ window.addEventListener('click', (event) => {
   }
 });
 
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('delete-account-btn');
+  const user = JSON.parse(localStorage.getItem('usuarioLogado'));
+  console.log('Username para deletar:', user.Username);
+
+  btn.addEventListener('click', async () => {
+    try {
+    const response = await fetch(`http://localhost:3000/usuarios/delete/${user.Username}`, { method: 'DELETE' });
+
+    if (response.ok) {
+      alert('Conta excluída com sucesso!');
+      localStorage.clear();
+      window.location.href = '/';
+    } else {
+      const data = await response.json();
+      alert('Erro: ' + data.error);
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Erro de conexão com o servidor.');
+  }
+  });
+});

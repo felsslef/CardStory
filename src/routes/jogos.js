@@ -141,4 +141,78 @@ router.post('/jogo-tags', async (req, res) => {
   }
 });
 
+// Atualizar jogo pelo id
+router.put('/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { nome, descricao, imagem_url, tags } = req.body;
+
+  try {
+    // Atualiza os dados do jogo
+    const jogoAtualizado = await prisma.jogos.update({
+      where: { id },
+      data: {
+        nome,
+        descricao,
+        imagem_url
+      }
+    });
+
+    // Atualiza as tags relacionadas:
+    // Primeiro apaga as tags antigas
+    await prisma.JogoTags.deleteMany({
+      where: { jogo_id: id }
+    });
+
+    // Depois insere as novas tags (se houver)
+    if (tags && tags.length > 0) {
+      await prisma.JogoTags.createMany({
+        data: tags.map(tagId => ({
+          jogo_id: id,
+          tag_id: tagId
+        })),
+        skipDuplicates: true
+      });
+    }
+
+    // Retorna o jogo atualizado com as tags
+    const jogoComTags = await prisma.jogos.findUnique({
+      where: { id },
+      include: {
+        JogoTags: {
+          include: {
+            tag: true
+          }
+        }
+      }
+    });
+
+    res.json({ message: 'Jogo atualizado com sucesso', jogo: jogoComTags });
+  } catch (error) {
+    console.error('Erro ao atualizar jogo:', error);
+    res.status(500).json({ error: 'Erro ao atualizar jogo' });
+  }
+});
+
+// Deletar jogo pelo id
+router.delete('/:id', async (req, res) => {
+  const id = parseInt(req.params.id);
+
+  try {
+    // Remove as associações de tags primeiro (por causa das constraints)
+    await prisma.JogoTags.deleteMany({
+      where: { jogo_id: id }
+    });
+
+    // Remove o jogo
+    await prisma.jogos.delete({
+      where: { id }
+    });
+
+    res.json({ message: 'Jogo deletado com sucesso' });
+  } catch (error) {
+    console.error('Erro ao deletar jogo:', error);
+    res.status(500).json({ error: 'Erro ao deletar jogo' });
+  }
+});
+
 export default router;
